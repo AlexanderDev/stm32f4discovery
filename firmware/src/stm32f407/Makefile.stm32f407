@@ -20,18 +20,34 @@ include $(TOOLPATH)/Makefile.std_perph
 ### Compilation rules
 CUSTOM_RULE_S_TO_OBJECTDIR_O=1
 $(OBJECTDIR)/%.o: %.S
-	$(QUIET_CC)$(CC) $(CFLAGS) -c $< -o $@
+	$(TRACE_CC)
+	$(Q)$(CC) $(CFLAGS) -c $< -o $@
 
 CUSTOM_RULE_ALLOBJS_TO_TARGETLIB=1
 $(OBJECTDIR)/contiki-$(TARGET).a: $(CONTIKI_OBJECTFILES)
-	$(AR) $(AROPTS) $@ $^
+	$(TRACE_AR)
+	$(Q)$(AR) $(AROPTS) $@ $^
+
+CUSTOM_RULE_C_TO_CO=1
+$(OBJECTDIR)/%.co: %.c
+	$(TRACE_CC)
+	$(Q)$(CC) $(CFLAGS) -DAUTOSTART_ENABLE -c $< -o $@
 
 ### Main rule
 CUSTOM_RULE_LINK=1
-%.$(TARGET): %.co $(PROJECT_OBJECTFILES) $(PROJECT_LIBRARIES) $(OBJECTDIR)/contiki-$(TARGET).a
-	$(CC) $(CFLAGS) ${filter-out %.a,$^} -o $(OBJECTDIR)/$(CONTIKI_PROJECT).elf ${filter %.a,$^}  $(LINKER_FLAGS)
+%.$(TARGET): $(OBJECTDIR)/%.co $(PROJECT_OBJECTFILES) $(PROJECT_LIBRARIES) $(OBJECTDIR)/contiki-$(TARGET).a
+	$(TRACE_LD) %.$(TARGET)
+	$(Q)$(CC) $(CFLAGS) ${filter-out %.a,$^} -o $(OBJECTDIR)/$(CONTIKI_PROJECT).elf ${filter %.a,$^}  $(LINKER_FLAGS)
 
 $(CONTIKI_PROJECT).bin: $(CONTIKI_PROJECT)
 	$(OBJCOPY) $(OBJOPTS) $(OBJECTDIR)/$(CONTIKI_PROJECT).elf $(OBJECTDIR)/$@
 
-.PRECIOUS: $(PROJECT_OBJECTFILES)
+
+load: $(CONTIKI_PROJECT)
+	openocd -f board/stm32f4discovery.cfg -c "program $(OBJECTDIR)/$(CONTIKI_PROJECT).elf  verify reset"
+
+openocd: 
+	openocd -f board/stm32f4discovery.cfg
+
+.PRECIOUS: $(PROJECT_OBJECTFILES) $(OBJECTDIR)/%.co
+

@@ -2,7 +2,7 @@
 
 #include "hardware.h"
 
-#define BLINK_PAUSE 0x30000 //65536 tick
+#define BLINK_PAUSE 0x90000 //65536 tick
 
 /*---------------------------------------------------------------------------*/
 PROCESS(main_process, "Main process");

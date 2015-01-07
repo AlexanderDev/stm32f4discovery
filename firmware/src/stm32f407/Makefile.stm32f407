@@ -1,0 +1,37 @@
+PROJECT_SOURCEFILES += startup_stm32f40_41xxx.S
+
+### Export compiling virable
+export TOOLPATH=$(CURDIR)/src/$(CPU_LABEL)
+TOOLCHAIN=$(TOOLPATH)/toolchain
+include $(TOOLPATH)/gcc_stm32.make
+
+CONTIKI_CPU = $(CONTIKI)/cpu/$(CPU_LABEL)
+CONTIKI_CPU_DIRS += .
+
+LINKER_FLAGS+=	-T$(CONTIKI_CPU)/stm32f4xx_flash.ld \
+				-Xlinker -Map=$(OBJECTDIR)/$(CONTIKI_PROJECT).map \
+				-lc -lnosys
+
+
+
+## Build standard peripherals library
+include $(TOOLPATH)/Makefile.std_perph
+
+### Compilation rules
+CUSTOM_RULE_S_TO_OBJECTDIR_O=1
+$(OBJECTDIR)/%.o: %.S
+	$(QUIET_CC)$(CC) $(CFLAGS) -c $< -o $@
+
+CUSTOM_RULE_ALLOBJS_TO_TARGETLIB=1
+$(OBJECTDIR)/contiki-$(TARGET).a: $(CONTIKI_OBJECTFILES)
+	$(AR) $(AROPTS) $@ $^
+
+### Main rule
+CUSTOM_RULE_LINK=1
+%.$(TARGET): %.co $(PROJECT_OBJECTFILES) $(PROJECT_LIBRARIES) $(OBJECTDIR)/contiki-$(TARGET).a
+	$(CC) $(CFLAGS) ${filter-out %.a,$^} -o $(OBJECTDIR)/$(CONTIKI_PROJECT).elf ${filter %.a,$^}  $(LINKER_FLAGS)
+
+$(CONTIKI_PROJECT).bin: $(CONTIKI_PROJECT)
+	$(OBJCOPY) $(OBJOPTS) $(OBJECTDIR)/$(CONTIKI_PROJECT).elf $(OBJECTDIR)/$@
+
+.PRECIOUS: $(PROJECT_OBJECTFILES)

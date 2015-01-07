@@ -1,0 +1,54 @@
+### Import virable:	STD_LIB_SRC_DIR
+### There are virable need for another building
+
+STD_LIB_SRC_DIR = $(TOOLPATH)/std_perph_src
+
+#Set sdt driver path
+STD_PERIPH_DRIVER_DIR=$(STD_LIB_SRC_DIR)/Libraries/STM32F4xx_StdPeriph_Driver
+
+#Set sdt cmsis path
+CMSIS_DIR=$(STD_LIB_SRC_DIR)/Libraries/CMSIS
+CMSIS_INCLUDE_DIRS=$(CMSIS_DIR)/Device/ST/STM32F4xx/Include/ $(CMSIS_DIR)/Include/
+
+CFLAGS+= -DUSE_STDPERIPH_DRIVER
+
+#Include paths
+CFLAGS+= $(addprefix -I, . $(STD_PERIPH_DRIVER_DIR)/inc $(CMSIS_INCLUDE_DIRS))
+
+ifneq ($(USE_ASSERT), )
+	CFLAGS+= -D"assert_param(expr)=((expr) ? (void)0 : assert_failed((uint8_t *)__FILE__, __LINE__))"
+else
+	CFLAGS+= -D STM32F40_41xxx -D "assert_param(expr)=((void)0)"
+endif
+
+PROJECTDIRS += $(STD_PERIPH_DRIVER_DIR)/src
+
+PROJECT_SOURCEFILES += misc.c \
+					  stm32f4xx_adc.c \
+					  stm32f4xx_can.c \
+					  stm32f4xx_crc.c \
+					  stm32f4xx_cryp.c \
+					  stm32f4xx_dac.c \
+					  stm32f4xx_dbgmcu.c \
+					  stm32f4xx_dcmi.c \
+					  stm32f4xx_dma.c \
+					  stm32f4xx_exti.c \
+					  stm32f4xx_flash.c \
+					  stm32f4xx_fsmc.c \
+					  stm32f4xx_gpio.c \
+					  stm32f4xx_hash.c \
+					  stm32f4xx_i2c.c \
+					  stm32f4xx_iwdg.c \
+					  stm32f4xx_pwr.c \
+					  stm32f4xx_rcc.c \
+					  stm32f4xx_rng.c \
+					  stm32f4xx_rtc.c \
+					  stm32f4xx_sdio.c \
+					  stm32f4xx_spi.c \
+					  stm32f4xx_syscfg.c \
+					  stm32f4xx_tim.c \
+					  stm32f4xx_usart.c \
+					  stm32f4xx_wwdg.c \
+					  stm32f4xx_it.c \
+					  system_stm32f4xx.c \
+

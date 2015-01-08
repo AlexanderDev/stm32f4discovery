@@ -1,10 +1,10 @@
 #ifndef CLOCK_H_INCLUDED
 #define CLOCK_H_INCLUDED
 
-#include "stm32l1xx.h"
+#include "stm32f4xx.h"
 
 
-#define CPU_CLOCK 24000000 // Hz
+#define CPU_CLOCK 64000000 // Hz
 
 // Time in usecond
 #define GET_TICS(usec) ((usec) * (CPU_CLOCK/1000000))
@@ -18,15 +18,16 @@
     @param  rcc_mco_div: Frequency divisor
     @retval None
 */
-void init_mco(uint8_t rcc_mco_source, uint8_t rcc_mco_div);
+void init_mco(void);
 
 /**
-    @brief  Initializes HSI for system clock through PLL
+    @brief  Initializes HSE for system clock through PLL
     @param  div_freq: Divisor of HSI frequency(16 Mhz)
     @param  mul_freq: Multiplier of HSI frequency(16 Mhz)
+    @param  div_sysclk: Divisor for SYSCLOCK frequency
     @retval None
 */
-void hsi_init(uint8_t mul_freq, uint8_t div_freq);
+void hse_init(uint32_t mul_freq, uint8_t div_freq, uint8_t div_sysclk);
 
 /**
     @brief  Initializes timer for upcounting mode

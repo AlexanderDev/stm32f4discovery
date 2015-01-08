@@ -5,7 +5,7 @@
 
 #include "stm32f4xx.h"
 #include "led.h"
-//#include "clock.h"
+#include "clock.h"
 
 
 #define DEBUG_PIN GPIO_Pin_12

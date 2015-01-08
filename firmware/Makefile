@@ -1,5 +1,5 @@
-#CONTIKI_PROJECT = accelerometer
-CONTIKI_PROJECT = blink
+CONTIKI_PROJECT = accelerometer
+#CONTIKI_PROJECT = blink
 CPU_LABEL = stm32f407
 TARGET=stm32f4discovery
 

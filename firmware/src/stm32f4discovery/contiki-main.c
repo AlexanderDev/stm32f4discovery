@@ -15,11 +15,14 @@ int main(void) {
 
     hw_init();
     process_init();
-    autostart_start(autostart_processes);
+    //autostart_start(autostart_processes);
 
+    int r=0;
     while (1) {
+      do {
+        r = process_run();
+      } while(r > 0);
         main_process_poll();
-        int n = process_run();
     }
 }
 

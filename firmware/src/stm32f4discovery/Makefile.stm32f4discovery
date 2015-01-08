@@ -1,6 +1,7 @@
 PROJECT_SOURCEFILES += 	contiki-main.c \
 						led.c \
 						hardware.c \
+						clock.c
 
 
 ifdef UIP_CONF_IPV6

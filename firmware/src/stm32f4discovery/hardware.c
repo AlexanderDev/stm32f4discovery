@@ -4,7 +4,8 @@
 
 void
 hw_init(void) {
-    //hsi_init(RCC_PLLMul_6, RCC_PLLDiv_4); /*24 Mhz*/
+    hse_init(320, 20, 2); /*64 Mhz*/
+    init_mco();
     led_init();
     led_turn_on();
 }

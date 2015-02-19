@@ -1,16 +1,15 @@
-CONTIKI_PROJECT = accelerometer
-#CONTIKI_PROJECT = blink
-CPU_LABEL = stm32f407
+ROOTPATH = $(CURDIR)
+LIBPATH=$(ROOTPATH)/libs
+
 TARGET=stm32f4discovery
+CPU_LABEL = stm32f407
 
-PROJECTDIRS += src src/inc
-
-#PROJECT_SOURCEFILES += 
-
-all: $(CONTIKI_PROJECT)
-
-### Build libs
-LIBPATH=$(CURDIR)/libs
+CONTIKI_PROJECT = $(MAKECMDGOALS)
 CONTIKI =  $(LIBPATH)/contiki
+PROJECTDIRS += src
 include $(CONTIKI)/Makefile.include
+
+
+
+
 

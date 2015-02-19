@@ -1,7 +1,7 @@
-### Import virable:	STD_LIB_SRC_DIR
+### Import virable:	STD_LIB_ROOT
 ### There are virable need for another building
 
-STD_LIB_SRC_DIR = $(TOOLPATH)/std_perph_src
+STD_LIB_SRC_DIR = $(STD_LIB_ROOT)/std_perph_src
 
 #Set sdt driver path
 STD_PERIPH_DRIVER_DIR=$(STD_LIB_SRC_DIR)/Libraries/STM32F4xx_StdPeriph_Driver
@@ -9,8 +9,6 @@ STD_PERIPH_DRIVER_DIR=$(STD_LIB_SRC_DIR)/Libraries/STM32F4xx_StdPeriph_Driver
 #Set sdt cmsis path
 CMSIS_DIR=$(STD_LIB_SRC_DIR)/Libraries/CMSIS
 CMSIS_INCLUDE_DIRS=$(CMSIS_DIR)/Device/ST/STM32F4xx/Include/ $(CMSIS_DIR)/Include/
-
-CFLAGS+= -DUSE_STDPERIPH_DRIVER
 
 #Include paths
 CFLAGS+= $(addprefix -I, . $(STD_PERIPH_DRIVER_DIR)/inc $(CMSIS_INCLUDE_DIRS))
@@ -21,9 +19,8 @@ else
 	CFLAGS+= -D STM32F40_41xxx -D "assert_param(expr)=((void)0)"
 endif
 
-PROJECTDIRS += $(STD_PERIPH_DRIVER_DIR)/src
-
-PROJECT_SOURCEFILES += misc.c \
+STD_DRIVER_PROJECTDIRS = $(STD_PERIPH_DRIVER_DIR)/src $(STD_LIB_ROOT)
+STD_DRIVER_PROJECT_SOURCEFILES += misc.c \
 					  stm32f4xx_adc.c \
 					  stm32f4xx_can.c \
 					  stm32f4xx_crc.c \

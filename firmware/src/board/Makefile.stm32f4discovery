@@ -1,15 +1,12 @@
 PROJECT_SOURCEFILES += 	contiki-main.c \
-						led.c \
-						hardware.c \
-						clock.c
-
-
+						#led.c
 ifdef UIP_CONF_IPV6
 	CFLAGS += -DWITH_UIP6=1
 endif
 
-CONTIKI_TARGET_DIRS = . inc
+USE_STD_DRIVER = 1
 
+CONTIKI_TARGET_DIRS = . inc
 include $(CONTIKI)/cpu/stm32f407/Makefile.stm32f407
 
 

@@ -1,53 +1,103 @@
-PROJECT_SOURCEFILES += startup_stm32f40_41xxx.S
+### Add Source files
+### add start file
+PROJECT_SOURCEFILES += 	startup_stm32f40_41xxx.S #clock.c hardware.c
 
-### Export compiling virable
-export TOOLPATH=$(CURDIR)/src/$(CPU_LABEL)
-TOOLCHAIN=$(TOOLPATH)/toolchain
-include $(TOOLPATH)/gcc_stm32.make
 
+### Contiki dirs
 CONTIKI_CPU = $(CONTIKI)/cpu/$(CPU_LABEL)
 CONTIKI_CPU_DIRS += .
 
-LINKER_FLAGS+=	-T$(CONTIKI_CPU)/stm32f4xx_flash.ld \
-				-Xlinker -Map=$(OBJECTDIR)/$(CONTIKI_PROJECT).map \
-				-lc -lnosys
+
+### Search path for sources files
+override VPATH += $(SOURCEDIRS)
 
 
+### Compile flags
+include $(CONTIKI_CPU)/gcc_stm32.make
 
-## Build standard peripherals library
-include $(TOOLPATH)/Makefile.std_perph
+LINKER_FLAGS+=	-L$(CONTIKI_CPU) \
+				-Tstm32f4xx_flash.ld \
+				-Wl,--cref -Wl,-Map=$(OBJECTDIR)/$(CONTIKI_PROJECT).map \
+				-nostdlib
+
+
+### Build standard peripherals library
+STD_LIB_ROOT = $(LIBPATH)/std_perph_f4/
+include $(STD_LIB_ROOT)/Makefile.std_perph
+PROJECTDIRS += $(STD_DRIVER_PROJECTDIRS)
+ifneq ($(USE_STD_DRIVER), )
+	CFLAGS+= -DUSE_STDPERIPH_DRIVER
+	PROJECT_SOURCEFILES += $(STD_DRIVER_PROJECT_SOURCEFILES)
+endif
+
+
+### Build hardware abstraction layer
+HALCPP_ROOT = $(LIBPATH)/halcpp/
+include $(HALCPP_ROOT)/Makefile.halcpp
+PROJECTDIRS += $(HALCPP_DIRS)
+PROJECT_SOURCEFILES += $(HALCPP_SRCS)
+
+
+### Compile firmware with contiki
+CUSTOM_RULE_LINK=1
+%.$(TARGET): CFLAGS+= -DAUTOSTART_ENABLE
+%.$(TARGET):  $(OBJECTDIR)/%.co $(PROJECT_OBJECTFILES) $(PROJECT_LIBRARIES) $(OBJECTDIR)/contiki-$(TARGET).a
+	$(TRACE_LD)
+	$(Q)$(CC) $(CFLAGS) ${filter-out %.a,$^} -o $(OBJECTDIR)/$(CONTIKI_PROJECT).elf ${filter %.a,$^}  $(LINKER_FLAGS)
+	$(SIZE) $(OBJECTDIR)/$*.elf
+
+
+### Compile firmware witout contiki
+%.bare_metal: $(OBJECTDIR)/%.co $(filter-out $(OBJECTDIR)/contiki-main.o, $(PROJECT_OBJECTFILES))
+	$(TRACE_LD)
+	$(Q)$(CC) $(CFLAGS) $(LINKER_FLAGS) $^ -o $(OBJECTDIR)/$*.elf
+	$(OBJDUMP) -x -ds $(OBJECTDIR)/$*.elf  > $(OBJECTDIR)/$*.dis
+	$(SIZE) $(OBJECTDIR)/$*.elf
+
 
 ### Compilation rules
+### Asm to obj file
 CUSTOM_RULE_S_TO_OBJECTDIR_O=1
-$(OBJECTDIR)/%.o: %.S
+$(OBJECTDIR)/%.o: %.S | $(OBJECTDIR)
 	$(TRACE_CC)
 	$(Q)$(CC) $(CFLAGS) -c $< -o $@
 
+
+### Contiki objs files to contiki lib
 CUSTOM_RULE_ALLOBJS_TO_TARGETLIB=1
 $(OBJECTDIR)/contiki-$(TARGET).a: $(CONTIKI_OBJECTFILES)
 	$(TRACE_AR)
 	$(Q)$(AR) $(AROPTS) $@ $^
 
+
+### C file to obj file
 CUSTOM_RULE_C_TO_CO=1
-$(OBJECTDIR)/%.co: %.c
+$(OBJECTDIR)/%.co: %.c | $(OBJECTDIR)
 	$(TRACE_CC)
-	$(Q)$(CC) $(CFLAGS) -DAUTOSTART_ENABLE -c $< -o $@
+	$(Q)$(CC) $(CFLAGS) -c $< -o $@
 
-### Main rule
-CUSTOM_RULE_LINK=1
-%.$(TARGET): $(OBJECTDIR)/%.co $(PROJECT_OBJECTFILES) $(PROJECT_LIBRARIES) $(OBJECTDIR)/contiki-$(TARGET).a
-	$(TRACE_LD) %.$(TARGET)
-	$(Q)$(CC) $(CFLAGS) ${filter-out %.a,$^} -o $(OBJECTDIR)/$(CONTIKI_PROJECT).elf ${filter %.a,$^}  $(LINKER_FLAGS)
 
+### C++ file to obj file
+# Cancel the predefined implict rule:
+%: %.cc
+$(OBJECTDIR)/%.co $(OBJECTDIR)/%.o: %.cc | $(OBJECTDIR)
+	$(TRACE_CXX)
+	$(Q)$(CXX) $(CXXFLAGS) -c $< -o $@
+
+
+### Make bin firmware
 $(CONTIKI_PROJECT).bin: $(CONTIKI_PROJECT)
 	$(OBJCOPY) $(OBJOPTS) $(OBJECTDIR)/$(CONTIKI_PROJECT).elf $(OBJECTDIR)/$@
 
 
+### Helpers rule
 load: $(CONTIKI_PROJECT)
 	openocd -f board/stm32f4discovery.cfg -c "program $(OBJECTDIR)/$(CONTIKI_PROJECT).elf  verify reset"
 
-openocd: 
+openocd:
 	openocd -f board/stm32f4discovery.cfg
 
+
+.PHONY: load openocd all
 .PRECIOUS: $(PROJECT_OBJECTFILES) $(OBJECTDIR)/%.co
 

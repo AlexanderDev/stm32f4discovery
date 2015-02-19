@@ -1,0 +1,7 @@
+### Import virable:	HALCPP_ROOT
+### There are virable need for another building
+HALCPP_DIRS := $(shell find $(HALCPP_ROOT) -type d)
+HALCPP_SRCS := $(notdir $(shell find $(HALCPP_ROOT) -name "*.cc" -o -name "*.c"))
+
+
+

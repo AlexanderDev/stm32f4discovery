@@ -16,7 +16,7 @@ void GPIO<port_number>::write(uint8_t pin, uint8_t value) {
 }
 
 template<uint8_t port_number>
-void GPIO<port_number>::init(uint32_t flags, int8_t pin=-1) {
+void GPIO<port_number>::init(uint32_t flags, int8_t pin) {
     GPIO_TypeDef *GPIOx=get_adress_gpio_regs(port_number);
     /* GPIO Periph clock enable */
     RCC->AHB1ENR |= 0x1 << port_number;

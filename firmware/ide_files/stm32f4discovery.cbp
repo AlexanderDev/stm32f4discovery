@@ -51,8 +51,11 @@
 			<Option target="freq_generator" />
 		</Unit>
 		<Unit filename="../libs/halcpp/Makefile.halcpp" />
+		<Unit filename="../libs/halcpp/src/halcpp_clock.cc" />
+		<Unit filename="../libs/halcpp/src/halcpp_clock.hh" />
 		<Unit filename="../libs/halcpp/src/halcpp_gpio.cc" />
 		<Unit filename="../libs/halcpp/src/halcpp_gpio.hh" />
+		<Unit filename="../libs/halcpp/src/stm32f407/stm32f407_clock.cc" />
 		<Unit filename="../libs/halcpp/src/stm32f407/stm32f407_gpio.cc" />
 		<Unit filename="../libs/halcpp/src/stm32f407/stm32f407_gpio.hh" />
 		<Unit filename="../libs/std_perph_f4/Makefile.std_perph" />

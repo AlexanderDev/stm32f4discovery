@@ -1,7 +1,8 @@
 #include "halcpp_gpio.hh"
+#include "halcpp_clock.hh"
 
-
-#define LED_PIN GPIO_Pin_15
+#define CPU_FCLOCK 168000000L // 168 Mhz
+#define EXT_FCLOCK   8000000L
 
 
 void delay(volatile unsigned int nCount) {
@@ -9,6 +10,7 @@ void delay(volatile unsigned int nCount) {
 }
 
 int main() {
+    CLOCK::init(CPU_FCLOCK, EXT_FCLOCK);
     GPIO<D>::init(OUTPUT, 15);
     while(1){
         GPIO<D>::write(15, 1);

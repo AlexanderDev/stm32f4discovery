@@ -1,14 +1,14 @@
 #include <stm32f407_gpio.hh>
 #include <halcpp_gpio.hh>
 
-inline GPIO_TypeDef *get_adress_gpio_regs(uint8_t port_number){
+inline GPIO_TypeDef *get_adress_regs(uint8_t port_number){
     return ((GPIO_TypeDef *) (AHB1PERIPH_BASE + 0x0400 * port_number));
 }
 
 
 template<uint8_t port_number>
 void GPIO<port_number>::write(uint8_t pin, uint8_t value) {
-    GPIO_TypeDef *GPIOx=get_adress_gpio_regs(port_number);
+    GPIO_TypeDef *GPIOx=get_adress_regs(port_number);
     if(value)
         GPIOx->BSRRL |= 0x1 << pin;
     else
@@ -17,7 +17,7 @@ void GPIO<port_number>::write(uint8_t pin, uint8_t value) {
 
 template<uint8_t port_number>
 void GPIO<port_number>::init(uint32_t flags, int8_t pin) {
-    GPIO_TypeDef *GPIOx=get_adress_gpio_regs(port_number);
+    GPIO_TypeDef *GPIOx=get_adress_regs(port_number);
     /* GPIO Periph clock enable */
     RCC->AHB1ENR |= 0x1 << port_number;
 

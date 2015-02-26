@@ -56,12 +56,18 @@
 		<Unit filename="../libs/halcpp/src/halcpp_clock.hh" />
 		<Unit filename="../libs/halcpp/src/halcpp_gpio.cc" />
 		<Unit filename="../libs/halcpp/src/halcpp_gpio.hh" />
+		<Unit filename="../libs/halcpp/src/halcpp_interrupt.hh" />
 		<Unit filename="../libs/halcpp/src/stm32f407/stm32f407_clock.cc" />
 		<Unit filename="../libs/halcpp/src/stm32f407/stm32f407_dac.cc" />
 		<Unit filename="../libs/halcpp/src/stm32f407/stm32f407_dac.hh" />
 		<Unit filename="../libs/halcpp/src/stm32f407/stm32f407_gpio.cc" />
 		<Unit filename="../libs/halcpp/src/stm32f407/stm32f407_gpio.hh" />
+		<Unit filename="../libs/halcpp/src/stm32f407/stm32f407_interrupt.cc" />
 		<Unit filename="../libs/std_perph_f4/Makefile.std_perph" />
+		<Unit filename="../libs/std_perph_f4/system_stm32f4xx.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../obj_stm32f4discovery/freq_generator.bare_metal.map" />
 		<Unit filename="../obj_stm32f4discovery/freq_generator.dis" />
 		<Unit filename="../src/board/Makefile.stm32f4discovery" />
 		<Unit filename="../src/board/contiki-main.c">
@@ -72,9 +78,13 @@
 		<Unit filename="../src/stm32f407/gcc_stm32.make" />
 		<Unit filename="../src/stm32f407/startup_stm32f40_41xxx.S" />
 		<Unit filename="../src/stm32f407/stm32f4xx_flash.ld" />
+		<Unit filename="../src/stm32f407/stm32f4xx_it.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Extensions>
 			<code_completion>
 				<search_path add="../libs/std_perph_f4/std_perph_src/Libraries/CMSIS/Device/ST/STM32F4xx/Include" />
+				<search_path add="../libs/std_perph_f4/std_perph_src/Libraries/CMSIS/Include" />
 			</code_completion>
 			<debugger>
 				<remote_debugging>

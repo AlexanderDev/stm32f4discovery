@@ -11,13 +11,14 @@ public:
 
 template<uint8_t>
 class TIMER {
-private:
-    static void setup(uint32_t freq);
 public:
     static void init(uint32_t freq);
+    static void setup(uint32_t freq);
+    static void interrupt(uint8_t src=0);
 };
 
 #define CPU_FCLOCK 168000000L // 168 Mhz
 #define EXT_FCLOCK   8000000L
+
 
 #endif // HALCPP_CLOCK_HH_INCLUDED

@@ -32,12 +32,11 @@ CFLAGS+= -Wattributes \
 		-mcpu=cortex-m3 -mthumb -msoft-float\
 		-fno-builtin \
 		-Wall \
-		-std=c++11 \
 		-fdata-sections \
 		-ffunction-sections \
 		-D STM32F40_41xxx
 
-CXXFLAGS = $(CFLAGS) -fno-exceptions -fno-rtti
+CXXFLAGS = $(CFLAGS) -fno-exceptions -fno-rtti -std=c++11
 
 OBJOPTS = -O binary
 
